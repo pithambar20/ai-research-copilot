@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
-import fitz  # PyMuPDF
+import pymupdf as fitz  # PyMuPDF
 
 # Common academic section header patterns
 SECTION_PATTERNS = [
