@@ -14,8 +14,8 @@ function updateSelectionCount() {
     if (badge) {
         badge.textContent = `${checked.length} selected`;
         badge.className = checked.length >= 2 
-            ? 'px-2 py-0.5 text-xs font-semibold bg-indigo-100 text-indigo-700 rounded-full' 
-            : 'px-2 py-0.5 text-xs font-semibold bg-slate-100 text-slate-600 rounded-full';
+            ? 'px-2.5 py-0.5 text-xs font-semibold bg-indigo-950/80 text-indigo-300 border border-indigo-800/50 rounded-full' 
+            : 'px-2.5 py-0.5 text-xs font-semibold bg-white/[0.06] text-slate-400 border border-white/[0.06] rounded-full';
     }
 
     if (btn) {
@@ -86,30 +86,30 @@ function renderMatrixTable(matrix) {
     table.innerHTML = '';
 
     const dimensions = [
-        { key: 'objective', label: '🎯 Objective & Problem', bg: 'bg-slate-50/70' },
-        { key: 'methodology', label: '⚙️ Proposed Methodology', bg: 'bg-white' },
-        { key: 'datasets', label: '📊 Datasets & Benchmarks', bg: 'bg-slate-50/70' },
-        { key: 'results', label: '📈 Key Results & Metrics', bg: 'bg-white' },
-        { key: 'strengths', label: '🌟 Key Strengths & Novelty', bg: 'bg-slate-50/70' },
-        { key: 'limitations', label: '⚠️ Limitations & Gaps', bg: 'bg-white' }
+        { key: 'objective', label: '🎯 Objective & Problem', bg: 'bg-slate-900/60' },
+        { key: 'methodology', label: '⚙️ Proposed Methodology', bg: 'bg-[#0b0f19]' },
+        { key: 'datasets', label: '📊 Datasets & Benchmarks', bg: 'bg-slate-900/60' },
+        { key: 'results', label: '📈 Key Results & Metrics', bg: 'bg-[#0b0f19]' },
+        { key: 'strengths', label: '🌟 Key Strengths & Novelty', bg: 'bg-slate-900/60' },
+        { key: 'limitations', label: '⚠️ Limitations & Gaps', bg: 'bg-[#0b0f19]' }
     ];
 
     // Table Header
     let theadHtml = `
         <thead>
-            <tr class="border-b border-slate-200 bg-slate-100/80">
-                <th class="p-4 w-48 text-slate-700 font-bold uppercase text-[11px] tracking-wider sticky left-0 bg-slate-100 z-10">
+            <tr class="border-b border-white/[0.08] bg-slate-950/90">
+                <th class="p-4 w-52 text-slate-400 font-bold uppercase text-[10px] tracking-wider sticky left-0 bg-slate-950 z-10 border-r border-white/[0.08]">
                     Dimension
                 </th>
     `;
 
     matrix.forEach(p => {
         theadHtml += `
-            <th class="p-4 min-w-[280px] max-w-[340px] align-top">
-                <h4 class="font-bold text-slate-900 text-xs line-clamp-2 leading-snug">${p.title}</h4>
+            <th class="p-4 min-w-[280px] max-w-[340px] align-top border-r border-white/[0.06]">
+                <h4 class="font-bold text-white text-xs line-clamp-2 leading-snug">${p.title}</h4>
                 <div class="mt-2 flex items-center gap-2">
-                    <a href="/reader/${p.paper_id}" class="text-[11px] text-indigo-600 hover:underline font-semibold flex items-center gap-1">
-                        <span>Read Paper</span> &rarr;
+                    <a href="/reader/${p.paper_id}" class="text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
+                        <span>Read Document</span> &rarr;
                     </a>
                 </div>
             </th>
@@ -121,8 +121,8 @@ function renderMatrixTable(matrix) {
     let tbodyHtml = `<tbody>`;
     dimensions.forEach(dim => {
         tbodyHtml += `
-            <tr class="border-b border-slate-200/80 ${dim.bg} hover:bg-indigo-50/20 transition">
-                <td class="p-4 font-semibold text-slate-900 text-xs align-top sticky left-0 ${dim.bg} z-10 border-r border-slate-200/60 shadow-2xs">
+            <tr class="border-b border-white/[0.06] ${dim.bg} hover:bg-indigo-950/30 transition">
+                <td class="p-4 font-bold text-indigo-300 text-xs align-top sticky left-0 ${dim.bg} z-10 border-r border-white/[0.08]">
                     ${dim.label}
                 </td>
         `;
@@ -130,7 +130,7 @@ function renderMatrixTable(matrix) {
         matrix.forEach(p => {
             const val = p[dim.key] || 'Not specified';
             tbodyHtml += `
-                <td class="p-4 align-top text-slate-700 leading-relaxed border-r border-slate-200/40">
+                <td class="p-4 align-top text-slate-300 leading-relaxed border-r border-white/[0.05]">
                     ${val}
                 </td>
             `;

@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-50 text-slate-900 antialiased">
+<html lang="en" class="dark h-full antialiased">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AI Research Copilot{% endblock %}</title>
+    
+    <!-- Theme Initializer (Prevents FOUC) -->
+    <script>
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,6 +22,13 @@
             theme: {
                 extend: {
                     colors: {
+                        dark: {
+                            950: '#070a12',
+                            900: '#0b0f19',
+                            850: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155'
+                        },
                         brand: {
                             50: '#eef2ff',
                             100: '#e0e7ff',
@@ -29,44 +46,71 @@
             }
         }
     </script>
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block head %}{% endblock %}
 </head>
-<body class="flex flex-col min-h-screen bg-slate-50">
+<body class="flex flex-col min-h-screen bg-[#0b0f19] text-slate-100 transition-colors duration-300">
 
     <!-- Top Navigation Bar -->
-    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+    <header class="sticky top-0 z-40 w-full border-b border-white/[0.08] bg-[#0b0f19]/80 backdrop-blur-xl transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Brand -->
             <div class="flex items-center gap-3">
-                <a href="/" class="flex items-center gap-2.5 font-bold text-slate-900 text-lg tracking-tight hover:opacity-90 transition">
-                    <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                <a href="/" class="flex items-center gap-2.5 group">
+                    <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition transform">
                         <i data-lucide="sparkles" class="w-5 h-5"></i>
                     </div>
-                    <span>AI Research <span class="text-indigo-600 font-extrabold">Copilot</span></span>
+                    <span class="font-bold text-base sm:text-lg tracking-tight text-white flex items-center gap-1.5">
+                        AI Research <span class="gradient-text font-extrabold">Copilot</span>
+                    </span>
                 </a>
-                <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100/80">v1.0</span>
+                
+                <!-- Model Status Badge -->
+                <div class="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-800/50 text-[11px] font-medium text-indigo-300">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Gemini 3.6 Flash</span>
+                </div>
             </div>
 
-            <!-- Navigation Links -->
-            <nav class="flex items-center gap-1 sm:gap-4">
-                <a href="/" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-indigo-600 hover:bg-slate-100/70 transition flex items-center gap-1.5">
-                    <i data-lucide="book-open" class="w-4 h-4"></i>
-                    <span>Paper Library</span>
+            <!-- Navigation Links & Actions -->
+            <nav class="flex items-center gap-1 sm:gap-2">
+                <a href="/" class="px-3 py-2 text-xs sm:text-sm font-medium rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition flex items-center gap-1.5">
+                    <i data-lucide="book-open" class="w-4 h-4 text-indigo-400"></i>
+                    <span>Library</span>
                 </a>
-                <a href="/matrix" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-indigo-600 hover:bg-slate-100/70 transition flex items-center gap-1.5">
-                    <i data-lucide="table-2" class="w-4 h-4"></i>
-                    <span>Literature Matrix</span>
+                
+                <a href="/matrix" class="px-3 py-2 text-xs sm:text-sm font-medium rounded-xl text-slate-300 hover:text-white hover:bg-white/[0.06] transition flex items-center gap-1.5">
+                    <i data-lucide="table-2" class="w-4 h-4 text-violet-400"></i>
+                    <span>Matrix</span>
                 </a>
-                <a href="/about" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-slate-100/70 transition flex items-center gap-1.5">
+                
+                <a href="/about" class="hidden sm:flex px-3 py-2 text-xs sm:text-sm font-medium rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.06] transition items-center gap-1.5">
                     <i data-lucide="info" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">About</span>
+                    <span>About</span>
                 </a>
 
-                <!-- Global Action: Open Ingest Modal -->
-                <button id="openIngestModalBtn" class="ml-2 inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition active:scale-95">
+                <!-- Theme Toggle Button -->
+                <button 
+                    onclick="toggleTheme()" 
+                    id="themeToggleBtn"
+                    class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.06] rounded-xl transition" 
+                    title="Toggle Theme"
+                >
+                    <i data-lucide="sun" id="themeIconSun" class="w-4 h-4 hidden"></i>
+                    <i data-lucide="moon" id="themeIconMoon" class="w-4 h-4"></i>
+                </button>
+
+                <!-- Global Ingest Action Button -->
+                <button 
+                    id="openIngestModalBtn" 
+                    class="ml-1 sm:ml-2 inline-flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-md shadow-indigo-600/20 active:scale-95 transition"
+                >
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     <span>Ingest Paper</span>
                 </button>
@@ -74,7 +118,7 @@
         </div>
     </header>
 
-    <!-- Main Content Block -->
+    <!-- Main Content Area -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {% block content %}{% endblock %}
     </main>
@@ -86,14 +130,38 @@
         // Initialize Lucide Icons
         lucide.createIcons();
 
+        // Theme Toggle Logic
+        function updateThemeIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const sun = document.getElementById('themeIconSun');
+            const moon = document.getElementById('themeIconMoon');
+            if (sun && moon) {
+                if (isDark) {
+                    sun.classList.remove('hidden');
+                    moon.classList.add('hidden');
+                } else {
+                    sun.classList.add('hidden');
+                    moon.classList.remove('hidden');
+                }
+            }
+        }
+
+        window.toggleTheme = function() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcons();
+        };
+
+        document.addEventListener('DOMContentLoaded', updateThemeIcons);
+
         // Toast Helper Function
         window.showToast = function(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border text-sm font-medium transition-all duration-300 transform translate-y-2 opacity-0 ${
-                type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' :
-                type === 'error' ? 'bg-rose-50 text-rose-800 border-rose-200' :
-                'bg-slate-900 text-white border-slate-800'
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-xl border text-xs font-medium transition-all duration-300 transform translate-y-2 opacity-0 ${
+                type === 'success' ? 'bg-emerald-950/90 text-emerald-200 border-emerald-800/60 backdrop-blur-md' :
+                type === 'error' ? 'bg-rose-950/90 text-rose-200 border-rose-800/60 backdrop-blur-md' :
+                'bg-slate-900/90 text-slate-100 border-slate-700/60 backdrop-blur-md'
             }`;
             
             const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info';

@@ -28,10 +28,14 @@ async function loadPapers() {
 
         if (data.success && data.papers && data.papers.length > 0) {
             allPapers = data.papers;
+            const badge = document.getElementById('paperCountBadge');
+            if (badge) badge.textContent = `${allPapers.length} ${allPapers.length === 1 ? 'paper' : 'papers'}`;
             renderPaperGrid(allPapers);
             gridEl.classList.remove('hidden');
         } else {
             allPapers = [];
+            const badge = document.getElementById('paperCountBadge');
+            if (badge) badge.textContent = '0 papers';
             emptyEl.classList.remove('hidden');
         }
     } catch (err) {
@@ -47,13 +51,13 @@ function renderPaperGrid(papers) {
     gridEl.innerHTML = '';
 
     if (papers.length === 0) {
-        gridEl.innerHTML = `<div class="col-span-full py-12 text-center text-sm text-slate-400">No matching research papers found.</div>`;
+        gridEl.innerHTML = `<div class="col-span-full py-16 text-center text-xs text-slate-400">No matching research papers found.</div>`;
         return;
     }
 
     papers.forEach(paper => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group';
+        card.className = 'bg-slate-900/60 border border-white/[0.08] hover:border-indigo-500/40 rounded-2xl p-5 shadow-xl glow-card backdrop-blur-md flex flex-col justify-between group transition-all';
 
         const authorsText = paper.authors && paper.authors.length > 0 
             ? paper.authors.slice(0, 3).join(', ') + (paper.authors.length > 3 ? ' et al.' : '')
@@ -61,42 +65,42 @@ function renderPaperGrid(papers) {
 
         const sectionsBadges = (paper.sections || [])
             .slice(0, 4)
-            .map(s => `<span class="px-2 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-600 rounded-md">${s.name}</span>`)
+            .map(s => `<span class="px-2 py-0.5 text-[10px] font-medium bg-white/[0.05] border border-white/[0.06] text-slate-300 rounded-md">${s.name}</span>`)
             .join('');
 
         card.innerHTML = `
             <div>
-                <div class="flex items-start justify-between gap-2 mb-2">
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold ${paper.arxiv_id ? 'bg-amber-50 text-amber-700 border border-amber-200/60' : 'bg-indigo-50 text-indigo-700 border border-indigo-200/60'}">
-                        ${paper.arxiv_id ? `<i data-lucide="globe" class="w-3 h-3"></i> arXiv:${paper.arxiv_id}` : '<i data-lucide="file" class="w-3 h-3"></i> PDF'}
+                <div class="flex items-start justify-between gap-2 mb-2.5">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${paper.arxiv_id ? 'bg-amber-950/50 text-amber-300 border border-amber-800/40' : 'bg-indigo-950/50 text-indigo-300 border border-indigo-800/40'}">
+                        ${paper.arxiv_id ? `<i data-lucide="globe" class="w-3 h-3 text-amber-400"></i> arXiv:${paper.arxiv_id}` : '<i data-lucide="file" class="w-3 h-3 text-indigo-400"></i> Local PDF'}
                     </span>
-                    <button onclick="handleDeletePaper('${paper.paper_id}')" class="text-slate-300 hover:text-rose-500 transition p-1" title="Delete Paper">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    <button onclick="handleDeletePaper('${paper.paper_id}')" class="text-slate-500 hover:text-rose-400 transition p-1 rounded-lg hover:bg-rose-500/10" title="Delete Document">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
 
-                <h3 class="font-bold text-slate-900 text-base leading-snug line-clamp-2 group-hover:text-indigo-600 transition" title="${paper.title}">
+                <h3 class="font-bold text-white text-sm sm:text-base leading-snug line-clamp-2 group-hover:text-indigo-400 transition" title="${paper.title}">
                     ${paper.title}
                 </h3>
-                <p class="text-xs text-slate-500 mt-1.5 line-clamp-1">${authorsText}</p>
+                <p class="text-[11px] text-slate-400 mt-1.5 line-clamp-1">${authorsText}</p>
                 
-                ${paper.abstract ? `<p class="text-xs text-slate-600 mt-3 line-clamp-3 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-100">${paper.abstract}</p>` : ''}
+                ${paper.abstract ? `<p class="text-xs text-slate-400 mt-3 line-clamp-3 leading-relaxed bg-slate-950/60 p-2.5 rounded-xl border border-white/[0.05]">${paper.abstract}</p>` : ''}
 
                 <div class="flex flex-wrap gap-1.5 mt-3">
                     ${sectionsBadges}
                 </div>
             </div>
 
-            <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-                <span class="text-xs font-medium text-slate-400">
+            <div class="pt-4 mt-4 border-t border-white/[0.06] flex items-center justify-between">
+                <span class="text-[11px] font-medium text-slate-500">
                     ${paper.page_count} ${paper.page_count === 1 ? 'page' : 'pages'} • ${paper.chunk_count} chunks
                 </span>
 
                 <div class="flex items-center gap-2">
-                    <a href="/api/papers/${paper.paper_id}/pdf" target="_blank" class="p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition" title="Open PDF">
-                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                    <a href="/api/papers/${paper.paper_id}/pdf" target="_blank" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] transition" title="Open PDF">
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                     </a>
-                    <a href="/reader/${paper.paper_id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition">
+                    <a href="/reader/${paper.paper_id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 active:scale-95 transition">
                         <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
                         <span>Read & Chat</span>
                     </a>
@@ -292,17 +296,17 @@ async function handleArxivSearch() {
             resultsContainer.innerHTML = '';
             data.results.forEach(paper => {
                 const item = document.createElement('div');
-                item.className = 'p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 transition flex flex-col gap-1.5';
+                item.className = 'p-3 rounded-2xl border border-white/[0.08] bg-slate-900/90 hover:border-indigo-500/50 transition flex flex-col gap-2';
                 item.innerHTML = `
                     <div class="flex items-start justify-between gap-2">
-                        <span class="px-1.5 py-0.5 text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 rounded">
+                        <span class="px-2 py-0.5 text-[10px] font-bold bg-amber-950/60 text-amber-300 border border-amber-800/40 rounded-full">
                             arXiv:${paper.arxiv_id}
                         </span>
-                        <span class="text-[11px] text-slate-400">${paper.published_date || ''}</span>
+                        <span class="text-[11px] text-slate-500">${paper.published_date || ''}</span>
                     </div>
-                    <h4 class="font-semibold text-slate-900 text-xs line-clamp-2">${paper.title}</h4>
-                    <p class="text-[11px] text-slate-500 line-clamp-1">${paper.authors.slice(0, 3).join(', ')}</p>
-                    <button id="ingest-btn-${paper.arxiv_id}" onclick="handleArxivIngest('${paper.arxiv_id}')" class="mt-2 self-end px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                    <h4 class="font-bold text-white text-xs line-clamp-2 leading-snug">${paper.title}</h4>
+                    <p class="text-[11px] text-slate-400 line-clamp-1">${paper.authors.slice(0, 3).join(', ')}</p>
+                    <button id="ingest-btn-${paper.arxiv_id}" onclick="handleArxivIngest('${paper.arxiv_id}')" class="mt-1 self-end px-3 py-1.5 bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-xs">
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                         <span>Ingest & Index</span>
                     </button>

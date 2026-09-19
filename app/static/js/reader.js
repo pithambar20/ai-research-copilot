@@ -132,20 +132,20 @@ function appendMessage(role, text) {
 
     if (role === 'user') {
         msg.innerHTML = `
-            <div class="max-w-[85%] bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-sm text-xs shadow-2xs">
+            <div class="max-w-[85%] bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-3.5 rounded-2xl rounded-tr-sm text-xs shadow-md">
                 ${escapeHtml(text)}
             </div>
-            <div class="h-6 w-6 rounded-md bg-slate-200 text-slate-600 flex items-center justify-center flex-shrink-0 text-xs font-semibold">
+            <div class="h-6 w-6 rounded-lg bg-indigo-950 text-indigo-300 border border-indigo-800/40 flex items-center justify-center flex-shrink-0 text-xs font-semibold">
                 U
             </div>
         `;
     } else {
         msg.innerHTML = `
-            <div class="h-6 w-6 rounded-md bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+            <div class="h-6 w-6 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md shadow-indigo-600/30">
                 <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
             </div>
-            <div class="flex-1 max-w-[92%] bg-white p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 shadow-2xs text-xs text-slate-800 space-y-2">
-                <div class="message-content prose prose-xs max-w-none prose-slate">
+            <div class="flex-1 max-w-[92%] bg-slate-900/90 p-4 rounded-3xl rounded-tl-sm border border-white/[0.08] shadow-lg text-xs text-slate-200 space-y-2">
+                <div class="message-content prose prose-xs max-w-none prose-invert">
                     ${text ? marked.parse(text) : ''}
                 </div>
             </div>
@@ -165,7 +165,7 @@ function renderFormattedResponse(container, markdownText, isFinal = false) {
 
         // Transform citation patterns [Page X] or [p. X] into clickable buttons
         html = html.replace(/\[(?:Page|p\.?)\s*(\d+)\]/gi, (match, pageNum) => {
-            return `<button onclick="jumpToPage(${pageNum})" class="inline-flex items-center gap-0.5 px-1.5 py-0.2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded border border-indigo-200/80 cursor-pointer text-[11px] transition" title="Jump to Page ${pageNum}">📄 Page ${pageNum}</button>`;
+            return `<button onclick="jumpToPage(${pageNum})" class="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-950 text-indigo-300 border border-indigo-700/60 hover:bg-indigo-600 hover:text-white font-bold rounded-md cursor-pointer text-[10px] transition shadow-xs" title="Jump to Page ${pageNum}">📄 Page ${pageNum}</button>`;
         });
 
         container.innerHTML = html;
@@ -213,7 +213,7 @@ function renderCitationsTray(citations) {
         if (!seenPages.has(c.page)) {
             seenPages.add(c.page);
             const badge = document.createElement('button');
-            badge.className = 'px-2 py-0.5 rounded-md bg-white border border-indigo-200 text-indigo-700 hover:bg-indigo-600 hover:text-white transition font-medium text-[11px] flex items-center gap-1 shadow-2xs';
+            badge.className = 'px-2 py-0.5 rounded-md bg-slate-900 border border-indigo-700/50 text-indigo-300 hover:bg-indigo-600 hover:text-white transition font-medium text-[10px] flex items-center gap-1 shadow-2xs';
             badge.innerHTML = `<span>p. ${c.page}</span> <span class="text-[9px] opacity-70">(${c.section})</span>`;
             badge.onclick = () => window.jumpToPage(c.page);
             list.appendChild(badge);
