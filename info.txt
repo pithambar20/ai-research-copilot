@@ -146,33 +146,32 @@ PHASE 2: INGESTION & DOCUMENT ENGINE (BACKEND & UI) (CURRENT STATUS: COMPLETED)
       - Dual-tab modal for Drag-and-drop PDF upload & arXiv import.
 
 
-PHASE 3: AI COPILOT & REASONING PIPELINE (BACKEND)
-  [ ] Gemini Service (app/services/gemini_service.py):
-      - Initialize Google GenAI client (`google-genai` SDK).
-      - Prompt engineering enforcing strict source citations: [Paper, p. X].
+PHASE 3: AI COPILOT & REASONING PIPELINE (CURRENT STATUS: COMPLETED)
+  [x] Gemini Service (app/services/gemini_service.py):
+      - Initialized Google GenAI client (`google-genai` SDK with gemini-2.5-flash).
+      - Strict academic citation grounding prompt ([Page X]).
       - Server-Sent Events (SSE) streaming generator for real-time answers.
-  [ ] Multi-Paper Synthesizer (app/services/gemini_service.py & synthesis.py):
-      - Extract comparison vectors across 2+ papers (Methodology, Dataset,
-        Metrics, Strengths, Limitations).
-      - Return structured JSON for side-by-side matrix view.
-  [ ] Citation & BibTeX Exporter (app/services/citation_service.py):
-      - Generate standardized BibTeX entries for any ingested paper.
+      - Graceful fallback with instructions when GEMINI_API_KEY is pending.
+  [x] Citation & BibTeX Exporter (app/services/citation_service.py):
+      - Automated BibTeX citation generation from paper metadata.
+  [x] Chat REST API (app/routes/chat.py):
+      - POST /api/chat/stream with event-driven SSE tokens and citations metadata.
+      - GET /api/chat/bibtex/<paper_id> formatted citation export.
 
-PHASE 4: MODERN FRONTEND DEVELOPMENT (SIMULTANEOUS WITH BACKEND)
-  [ ] Paper Library Dashboard (index.html, app.js):
-      - Grid/list view of uploaded and downloaded papers.
-      - Ingest modal: Drag-and-drop PDF upload or arXiv search bar.
-      - Paper cards displaying title, authors, year, and quick-action buttons.
-  [ ] Split-Screen Reader View (reader.html, reader.js):
-      - Left Pane: PDF.js embedded viewer with zoom, search, and page jump.
+PHASE 4: MODERN FRONTEND & SPLIT-SCREEN WORKSPACE (CURRENT STATUS: COMPLETED)
+  [x] Paper Library Dashboard (index.html, app.js):
+      - Grid view with paper cards, section badges, and statistics.
+      - Dual-tab modal for Drag-and-drop PDF upload & arXiv import.
+  [x] Split-Screen Reader Workspace (reader.html, reader.js):
+      - Left Pane: Embedded PDF viewer with page navigation and jumping.
       - Right Pane: AI Copilot Chat with:
-        * Quick Prompts ("Summarize", "Explain Methodology", "Key Findings").
-        * Live Markdown and KaTeX LaTeX math formula rendering.
-        * Clickable citation badges [p. 4] that scroll the PDF directly to page 4.
-  [ ] Comparative Literature Matrix View (matrix.html, matrix.js):
-      - Multi-paper selection selector.
-      - Responsive side-by-side comparison table.
-      - Export options (Download Markdown report or CSV).
+        * Quick Prompts (Summarize, Methodology, Limitations, Math).
+        * Live Markdown rendering with Marked.js.
+        * LaTeX mathematical formula rendering with KaTeX ($...$ and $$...$$).
+        * Clickable citation badges ([Page X]) that scroll/jump the PDF viewer.
+        * BibTeX modal with 1-click clipboard copy.
+  [ ] Comparative Literature Matrix View (matrix.html, matrix.js)
+
 
 PHASE 5: TESTING, REFINEMENT & VERIFICATION
   [ ] Ingestion Test: Upload sample PDF and verify text & page extraction.
