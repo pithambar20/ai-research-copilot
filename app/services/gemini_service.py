@@ -20,20 +20,29 @@ CRITICAL GROUNDING & CITATION RULES:
 5. If the provided context does not contain enough information to answer the question, state that clearly rather than hallucinating.
 """
 
+from dotenv import load_dotenv
+
 class GeminiService:
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or Config.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY", "")
-        self.model_name = "gemini-2.5-flash"
+        self.model_name = "gemini-3.6-flash"
         self.client = None
+        self._ensure_client()
 
-        if self.api_key and GENAI_AVAILABLE:
-            try:
-                self.client = genai.Client(api_key=self.api_key)
-            except Exception as e:
-                print(f"Error initializing Gemini client: {e}")
+    def _ensure_client(self):
+        if not self.client:
+            load_dotenv(override=True)
+            self.api_key = os.getenv("GEMINI_API_KEY", "") or Config.GEMINI_API_KEY
+            if self.api_key and GENAI_AVAILABLE:
+                try:
+                    self.client = genai.Client(api_key=self.api_key)
+                except Exception as e:
+                    print(f"Error initializing Gemini client: {e}")
 
     def is_configured(self) -> bool:
+        self._ensure_client()
         return bool(self.client and self.api_key)
+
 
     def _build_prompt_with_context(
         self,
