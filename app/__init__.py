@@ -11,9 +11,11 @@ def create_app():
     from app.routes import main
     from app.routes.papers import papers_bp
     from app.routes.chat import chat_bp
+    from app.routes.synthesis import synthesis_bp
 
     app.register_blueprint(main)
     app.register_blueprint(papers_bp)
     app.register_blueprint(chat_bp)
+    app.register_blueprint(synthesis_bp)
 
     return app

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Comparative Literature Matrix - AI Research Copilot{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Comparative Literature Matrix</h1>
+            <p class="text-sm text-slate-500 mt-0.5">Synthesize methodology, benchmarks, and research gaps across multiple papers.</p>
+        </div>
+
+        <div id="exportBar" class="hidden flex items-center gap-2">
+            <button onclick="exportMatrixAsMarkdown()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 shadow-2xs">
+                <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-600"></i>
+                <span>Export Markdown</span>
+            </button>
+            <button onclick="exportMatrixAsCSV()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 shadow-2xs">
+                <i data-lucide="sheet" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Export CSV</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Paper Selection Panel -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <div class="h-7 w-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <i data-lucide="check-square" class="w-4 h-4"></i>
+                </div>
+                <h3 class="font-bold text-slate-900 text-sm">Select Papers to Compare (Minimum 2)</h3>
+                <span id="selectedCountBadge" class="px-2 py-0.5 text-xs font-semibold bg-slate-100 text-slate-600 rounded-full">0 selected</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="selectAllPapers(true)" class="text-xs text-indigo-600 hover:underline font-medium">Select All</button>
+                <span class="text-slate-300">•</span>
+                <button type="button" onclick="selectAllPapers(false)" class="text-xs text-slate-500 hover:underline">Clear</button>
+            </div>
+        </div>
+
+        {% if papers and papers|length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-56 overflow-y-auto pr-1">
+            {% for paper in papers %}
+            <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-indigo-50/30 hover:border-indigo-200 cursor-pointer transition">
+                <input 
+                    type="checkbox" 
+                    name="paperSelect" 
+                    value="{{ paper.paper_id }}" 
+                    class="mt-1 h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                    onchange="updateSelectionCount()"
+                >
+                <div class="min-w-0 flex-1">
+                    <p class="font-semibold text-slate-800 text-xs line-clamp-1" title="{{ paper.title }}">{{ paper.title }}</p>
+                    <p class="text-[11px] text-slate-500 truncate mt-0.5">
+                        {{ paper.authors|join(', ') if paper.authors else 'Unknown' }}
+                        {% if paper.published_date %} • {{ paper.published_date[:4] }}{% endif %}
+                    </p>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+
+        <div class="pt-2 flex justify-end">
+            <button 
+                id="generateMatrixBtn" 
+                onclick="generateMatrix()" 
+                disabled 
+                class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm transition shadow-sm flex items-center gap-2"
+            >
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span id="generateBtnText">Generate Comparative Matrix</span>
+            </button>
+        </div>
+        {% else %}
+        <div class="py-8 text-center text-sm text-slate-500">
+            No papers in your library yet. <a href="/" class="text-indigo-600 font-semibold hover:underline">Ingest at least 2 papers</a> to use the Literature Matrix.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Matrix Display Area -->
+    <div id="matrixLoading" class="hidden py-16 flex flex-col items-center justify-center">
+        <div class="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p class="text-sm font-semibold text-slate-800 mt-4">Synthesizing papers with Gemini AI...</p>
+        <p class="text-xs text-slate-400 mt-1">Cross-referencing methodology, benchmarks, and findings</p>
+    </div>
+
+    <div id="matrixEmpty" class="py-16 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-white/40">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto mb-3">
+            <i data-lucide="columns" class="w-6 h-6"></i>
+        </div>
+        <h4 class="font-semibold text-slate-800 text-sm">Select at least 2 papers above to generate a matrix</h4>
+        <p class="text-xs text-slate-400 mt-1">Compare research problems, methodology, datasets, and limitations side-by-side.</p>
+    </div>
+
+    <!-- Scrollable Comparison Table -->
+    <div id="matrixContainer" class="hidden overflow-x-auto bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <table id="matrixTable" class="w-full text-left border-collapse text-xs">
+            <!-- Dynamically populated via matrix.js -->
+        </table>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/matrix.js') }}"></script>
+{% endblock %}

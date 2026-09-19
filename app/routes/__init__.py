@@ -15,6 +15,12 @@ def reader(paper_id):
         return redirect(url_for("main.home"))
     return render_template("reader.html", paper=paper)
 
+@main.route("/matrix")
+def matrix():
+    papers = paper_store.list_papers()
+    return render_template("matrix.html", papers=papers)
+
 @main.route("/about")
 def about():
-    return render_template("about.html")
+    return render_template("about.html")
+
