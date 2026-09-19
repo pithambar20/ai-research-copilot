@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50 text-slate-900 antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Research Copilot{% endblock %}</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen bg-slate-50">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/" class="flex items-center gap-2.5 font-bold text-slate-900 text-lg tracking-tight hover:opacity-90 transition">
+                    <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    </div>
+                    <span>AI Research <span class="text-indigo-600 font-extrabold">Copilot</span></span>
+                </a>
+                <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100/80">v1.0</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex items-center gap-1 sm:gap-4">
+                <a href="/" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-indigo-600 hover:bg-slate-100/70 transition flex items-center gap-1.5">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    <span>Paper Library</span>
+                </a>
+                <a href="/about" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-slate-100/70 transition flex items-center gap-1.5">
+                    <i data-lucide="info" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">About</span>
+                </a>
+
+                <!-- Global Action: Open Ingest Modal -->
+                <button id="openIngestModalBtn" class="ml-2 inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition active:scale-95">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Ingest Paper</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Block -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Toast Helper Function
+        window.showToast = function(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border text-sm font-medium transition-all duration-300 transform translate-y-2 opacity-0 ${
+                type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' :
+                type === 'error' ? 'bg-rose-50 text-rose-800 border-rose-200' :
+                'bg-slate-900 text-white border-slate-800'
+            }`;
+            
+            const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info';
+            toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 flex-shrink-0"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            lucide.createIcons({ root: toast });
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        };
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

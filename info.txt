@@ -1,0 +1,202 @@
+================================================================================
+                           AI RESEARCH COPILOT
+                 Full-Stack Implementation Plan & Architecture
+================================================================================
+
+1. PROJECT OVERVIEW
+--------------------------------------------------------------------------------
+AI Research Copilot is an intelligent, full-stack research assistant designed
+to help researchers ingest, read, analyze, compare, and synthesize academic
+papers with grounded, citation-backed AI assistance using Flask, Gemini API,
+ChromaDB, and modern frontend web technologies.
+
+
+2. TECHNOLOGY STACK
+--------------------------------------------------------------------------------
+Backend:
+  - Python 3.10+
+  - Flask (REST API, application factory, blueprints)
+  - Flask-CORS (Cross-Origin Resource Sharing support)
+  - PyMuPDF (fitz) (High-speed PDF text, layout, and page extraction)
+  - Google GenAI SDK (`google-genai` with Gemini 2.5 Flash)
+  - ChromaDB (Local vector database for chunk indexing & RAG retrieval)
+  - Requests (arXiv API search & automated PDF downloading)
+  - Pydantic & python-dotenv (Data validation & environment configuration)
+
+Frontend:
+  - Responsive Single-Page Application served via Flask templates & static assets
+  - Tailwind CSS & modern UI styling (dark/light clean academic theme)
+  - Lucide Icons
+  - PDF.js (In-browser split-view PDF reader with page-jump synchronization)
+  - Marked.js + Highlight.js (Markdown & code snippet rendering)
+  - KaTeX (LaTeX mathematical formula rendering)
+  - Server-Sent Events (SSE) (Real-time streaming AI answers)
+
+
+3. SYSTEM ARCHITECTURE & FLOW
+--------------------------------------------------------------------------------
+[User Browser / Frontend]
+   |
+   +--> Dashboard & Library: Search, upload PDFs, or query arXiv
+   +--> Split-Screen Reader: Left pane (PDF.js viewer), Right pane (AI Copilot Chat)
+   +--> Literature Matrix: Multi-paper comparative analysis table
+   |
+[Flask REST API & Routes]
+   |
+   +--> /api/papers (Upload PDF / Fetch from arXiv / Get Metadata)
+   +--> /api/chat   (RAG pipeline query & SSE streaming response)
+   +--> /api/synthesize (Multi-document comparative matrix generation)
+   |
+[Processing & Ingestion Pipeline]
+   |
+   +--> PyMuPDF: Extracts text, sections (Abstract, Intro, Methods, Results, etc.)
+   +--> Recursive Chunker: Splits sections into context chunks with page numbers
+   +--> ChromaDB: Indexes embeddings for semantic similarity search
+   |
+[AI & Reasoning Engine]
+   |
+   +--> Google Gemini 2.5 Flash: Grounded responses with strict citations [p. X]
+   +--> Synthesis Agent: Generates structured comparison JSON (methods, datasets, metrics)
+
+
+4. PROJECT DIRECTORY STRUCTURE
+--------------------------------------------------------------------------------
+ai-research-copilot/
+├── app/
+│   ├── __init__.py               # Flask app factory, config & blueprints
+│   ├── config.py                 # App settings, DB paths, Gemini API config
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── paper.py              # Paper, Author, Section metadata schemas
+│   │   └── chat.py               # Chat sessions, messages, citations
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── views.py              # Page rendering (Dashboard, Reader, Matrix)
+│   │   ├── papers.py             # Paper upload, arXiv query, PDF serving
+│   │   ├── chat.py               # RAG chat endpoint with Server-Sent Events
+│   │   └── synthesis.py          # Multi-paper comparative synthesis
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── pdf_parser.py         # PyMuPDF text & section extraction
+│   │   ├── arxiv_client.py       # arXiv query and downloader
+│   │   ├── vector_store.py       # ChromaDB manager (embeddings & similarity search)
+│   │   ├── gemini_service.py     # Gemini client for RAG, reasoning & synthesis
+│   │   └── citation_service.py   # BibTeX generation & grounding extractor
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css         # Split pane & reader styles
+│   │   ├── js/
+│   │   │   ├── api.js            # API caller & SSE streaming handler
+│   │   │   ├── app.js            # Dashboard interactions & paper management
+│   │   │   ├── reader.js         # Split-screen PDF viewer + synchronized citations
+│   │   │   ├── chat.js           # Copilot chat & KaTeX math rendering
+│   │   │   └── matrix.js         # Multi-paper comparative matrix UI
+│   │   └── vendor/               # PDF.js, KaTeX, Marked.js libraries
+│   └── templates/
+│       ├── base.html             # Common layout & modern navbar
+│       ├── index.html            # Paper library & discovery dashboard
+│       ├── reader.html           # Split-screen reader (PDF on left, Copilot on right)
+│       ├── matrix.html           # Multi-paper comparison matrix
+│       └── about.html            # About and documentation page
+├── data/
+│   ├── pdfs/                     # Stored PDF files
+│   └── vectordb/                 # ChromaDB persistent storage
+├── .env                          # Local secrets (GEMINI_API_KEY) - gitignored
+├── .env.example                  # Public configuration template
+├── .gitignore                    # Git ignore file (excludes venv, .env, data)
+├── requirements.txt              # Project dependencies
+├── run.py                        # Entry point to launch application
+├── info.txt                      # Project implementation plan & architecture guide
+└── README.md                     # GitHub documentation
+
+
+5. STEP-BY-STEP IMPLEMENTATION PHASES
+--------------------------------------------------------------------------------
+
+PHASE 1: ENVIRONMENT & CORE SETUP (CURRENT STATUS: COMPLETED)
+  [x] Python Virtual Environment (venv) initialized
+  [x] requirements.txt populated with core libraries
+  [x] Flask application factory (app/__init__.py) configured
+  [x] Entry point (run.py) configured with debug mode
+  [x] .gitignore created to protect secrets & exclude venv
+  [x] .env.example created as public configuration template
+  [x] Base templates created in app/templates/
+
+PHASE 2: INGESTION & DOCUMENT ENGINE (BACKEND & UI) (CURRENT STATUS: COMPLETED)
+  [x] Configuration module (app/config.py) for paths and settings
+  [x] Metadata models & persistent storage (app/models.py)
+  [x] PDF Parsing Service (app/services/pdf_parser.py):
+      - Extract text with page numbers and section headers.
+      - Extract title, authors, abstract.
+      - Intelligent recursive chunking preserving section & page context.
+  [x] arXiv Integration (app/services/arxiv_client.py):
+      - Query arXiv API by search terms, title, or arXiv ID.
+      - Download paper PDF and metadata automatically.
+  [x] Vector Storage Service (app/services/vector_store.py):
+      - Initialize persistent ChromaDB collections.
+      - Store chunks with metadata (paper_id, page_number, section).
+      - Perform semantic similarity searches for user queries.
+  [x] REST API Endpoints (app/routes/papers.py):
+      - GET /api/papers, GET /api/papers/<id>, GET /api/papers/<id>/pdf
+      - POST /api/papers/upload (Multipart PDF upload)
+      - GET /api/papers/arxiv/search & POST /api/papers/arxiv/ingest
+      - DELETE /api/papers/<id>
+  [x] Paper Library Dashboard & Ingestion UI (index.html, base.html, app.js)
+      - Responsive grid with paper cards, section badges, and statistics.
+      - Dual-tab modal for Drag-and-drop PDF upload & arXiv import.
+
+
+PHASE 3: AI COPILOT & REASONING PIPELINE (BACKEND)
+  [ ] Gemini Service (app/services/gemini_service.py):
+      - Initialize Google GenAI client (`google-genai` SDK).
+      - Prompt engineering enforcing strict source citations: [Paper, p. X].
+      - Server-Sent Events (SSE) streaming generator for real-time answers.
+  [ ] Multi-Paper Synthesizer (app/services/gemini_service.py & synthesis.py):
+      - Extract comparison vectors across 2+ papers (Methodology, Dataset,
+        Metrics, Strengths, Limitations).
+      - Return structured JSON for side-by-side matrix view.
+  [ ] Citation & BibTeX Exporter (app/services/citation_service.py):
+      - Generate standardized BibTeX entries for any ingested paper.
+
+PHASE 4: MODERN FRONTEND DEVELOPMENT (SIMULTANEOUS WITH BACKEND)
+  [ ] Paper Library Dashboard (index.html, app.js):
+      - Grid/list view of uploaded and downloaded papers.
+      - Ingest modal: Drag-and-drop PDF upload or arXiv search bar.
+      - Paper cards displaying title, authors, year, and quick-action buttons.
+  [ ] Split-Screen Reader View (reader.html, reader.js):
+      - Left Pane: PDF.js embedded viewer with zoom, search, and page jump.
+      - Right Pane: AI Copilot Chat with:
+        * Quick Prompts ("Summarize", "Explain Methodology", "Key Findings").
+        * Live Markdown and KaTeX LaTeX math formula rendering.
+        * Clickable citation badges [p. 4] that scroll the PDF directly to page 4.
+  [ ] Comparative Literature Matrix View (matrix.html, matrix.js):
+      - Multi-paper selection selector.
+      - Responsive side-by-side comparison table.
+      - Export options (Download Markdown report or CSV).
+
+PHASE 5: TESTING, REFINEMENT & VERIFICATION
+  [ ] Ingestion Test: Upload sample PDF and verify text & page extraction.
+  [ ] arXiv Test: Search arXiv for quantum computing / AI papers and auto-ingest.
+  [ ] RAG Test: Ask targeted question and verify answer cites correct page number.
+  [ ] Synchronization Test: Click citation badge and verify PDF moves to target page.
+  [ ] Synthesis Test: Compare two papers and verify the comparison table renders.
+
+
+6. QUICK START COMMANDS
+--------------------------------------------------------------------------------
+1. Activate Virtual Environment:
+   .\venv\Scripts\Activate.ps1
+
+2. Install Dependencies:
+   pip install -r requirements.txt
+
+3. Set up Environment Variables:
+   Copy-Item .env.example .env
+   # Edit .env and insert your GEMINI_API_KEY
+
+4. Run the Development Server:
+   python run.py
+
+5. Access the Web Application:
+   http://127.0.0.1:5000
+================================================================================

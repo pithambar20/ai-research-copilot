@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}About - AI Research Copilot{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+    <div class="border-b border-slate-200 pb-6">
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">About AI Research Copilot</h1>
+        <p class="text-base text-slate-500 mt-2">
+            An advanced academic assistant designed to accelerate literature reviews, paper comprehension, and comparative research.
+        </p>
+    </div>
+
+    <!-- Features Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
+                <i data-lucide="file-search" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-lg">Deep Document Parsing</h3>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Powered by PyMuPDF, extracts full-text, academic headings (Abstract, Methods, Results, Discussion), and maintains precise page offsets for accurate citations.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-4">
+                <i data-lucide="globe" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-lg">Instant arXiv Ingestion</h3>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Search the arXiv database directly or enter any paper ID (e.g., 2312.00752) to fetch the abstract, authors, and download the full PDF in one click.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-4">
+                <i data-lucide="database" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-lg">ChromaDB Vector Indexing</h3>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Chunks are vectorized and indexed into a local, persistent vector database. Queries retrieve semantically relevant context across single or multiple papers.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-700 flex items-center justify-center mb-4">
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-lg">Grounded Gemini AI Copilot</h3>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                Leverages Google Gemini 2.5 Flash for high-speed reasoning, LaTeX math formula rendering with KaTeX, and source-grounded answers.
+            </p>
+        </div>
+    </div>
+
+    <!-- Quick Instructions -->
+    <div class="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl p-6 border border-indigo-100">
+        <h3 class="font-bold text-indigo-950 text-base mb-2">Getting Started</h3>
+        <ol class="list-decimal list-inside space-y-1 text-sm text-indigo-900/80">
+            <li>Click <strong>"Ingest Paper"</strong> in the top bar.</li>
+            <li>Drag & drop a research PDF or search by arXiv ID.</li>
+            <li>Once indexed, click <strong>"Read & Chat"</strong> on any paper card.</li>
+            <li>Ask questions about methodology, findings, or request paper summaries.</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}
