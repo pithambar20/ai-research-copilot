@@ -1,0 +1,38 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment variables & secrets
+.env
+.env.local
+*.key
+
+# Application data & local databases
+data/
+*.sqlite3
+*.db
+vectordb/
+chroma.sqlite3
+
+# Uploads & temporary files
+uploads/
+pdfs/
+scratch/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+.DS_Store
